@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>RockPaperScissor</title>
+     <link rel="stylesheet" href="./output.css">
+</head>
+<body class="bg-purple-800 h-dvh text-white flex justify-center items-center">
+     <div class="content bg-white w-[500px] h-[530px] rounded-3xl overflow-hidden shadow-2xl">
+          <div class="header flex justify-center items-center bg-purple-500 h-[80px] ">
+               <h1 class="text-2xl font-bold">Rock Paper Scissors</h1>
+          </div>
+          <div class="scores bg-purple-200 h-[100px] flex justify-between items-center px-20 text-purple-500">
+               <div class=" flex flex-col justify-center items-center w-[70px]">
+                    <p>Player</p>
+                    <p class="js-player-score text-3xl font-bold">p</p>
+               </div>
+               <div class=" flex flex-col justify-center items-center w-[70px]">
+                    <p>Computer</p>
+                    <p class="js-computer-score text-3xl font-bold">c</p>
+               </div>
+          </div>
+          <div class="game-div h-[300px] bg-white">
+               <div class="game-display flex justify-between w-full text-center h-[150px]  items-center px-24 ">
+                    <div class="player-div-1 bg-purple-200 w-[125px] h-[125px] rounded-full flex justify-center items-center text-3xl shadow-md">YOU</div>
+                    <div class="text-black tie-indicator hidden">=</div>
+                    <div class="computer-div-1  bg-purple-200 w-[125px] h-[125px] rounded-full flex justify-center items-center text-3xl shadow-md">Comp</div>
+               </div>
+               <div class="game-choice flex justify-between w-full items-center h-[150px] px-16">
+                    <button onclick="setUserChoice('rock')" class="bg-purple-500 h-[80px] w-[80px] rounded-full focus:outline outline-black text-2xl shadow-md hover:bg-purple-600">👊</button>
+                    <button onclick="setUserChoice('paper')" class="bg-purple-500 h-[80px] w-[80px] rounded-full focus:outline outline-black text-2xl shadow-md hover:bg-purple-600">🖐️</button>
+                    <button onclick="setUserChoice('scissors')" class="bg-purple-500 h-[80px] w-[80px] rounded-full focus:outline outline-black text-2xl shadow-md hover:bg-purple-600">✌️</button>
+               </div>
+          </div>
+          <div class="play-button-div  h-[50px] flex p-2 ">
+               <button onclick="GenerateCompChoice()" class="bg-purple-500 h-full w-[400px] rounded-3xl mr-2 hover:bg-purple-600">Play</button>
+               <button onclick="resetScore()" class="bg-purple-500 h-full w-[80px] rounded-3xl hover:bg-purple-600">Reset</button>
+          </div>
+     </div>
+     
+          
+          
+     <script>
+          let userchoice = null;
+          let score = JSON.parse(localStorage.getItem('score')) || {
+               player:0,
+               computer:0,
+               tie:0
+          }
+          displayScore();
+          function setUserChoice(choice){
+               userchoice = choice;
+          }
+          function GenerateCompChoice(){
+
+               if(userchoice === null){
+                    alert('Select any option first!');
+                    return;
+               }
+               document.querySelector('.tie-indicator').style.display = 'none';
+               let a = ['rock','paper','scissors'];
+               let iconmap = {
+                    rock:'👊',
+                    paper:'🖐️',
+                    scissors:'✌️'
+               }
+               let randindex = Math.floor(Math.random() * a.length);
+               let computerchoice = a[randindex];
+               let player_choice = document.querySelector('.player-div-1');
+               let computer_choice = document.querySelector('.computer-div-1');
+               player_choice.innerText = iconmap[userchoice];
+               computer_choice.innerText = iconmap[computerchoice];
+               if(userchoice === computerchoice){
+                    score.tie += 1;
+                    document.querySelector('.tie-indicator').style.display = 'block';
+                    displayScore();
+                    return;
+               }
+               if(computerchoice === 'rock'){
+                    if(userchoice === 'paper'){
+                         score.player +=1;
+                         displayScore();
+                    }
+                    else{
+                         score.computer+=1;
+                         displayScore();
+                    }
+               }
+               else if(computerchoice === 'paper'){
+                    if(userchoice === 'rock'){
+                         score.computer+=1;
+                         displayScore();
+                    }
+                    else{
+                         score.player +=1;
+                         displayScore();
+                    }
+               }
+               else{ 
+                    if(userchoice === 'rock'){
+                         score.player +=1;
+                         displayScore();
+                    }
+                    else{
+                         score.computer+=1;
+                         displayScore();
+                    }
+               }
+               localStorage.setItem('score',JSON.stringify(score));
+               userchoice = null;
+          }
+          function resetScore(){
+               localStorage.removeItem('score');
+               score.player = 0;
+               score.tie = 0;
+               score.computer = 0;
+               localStorage.setItem('score',JSON.stringify(score));
+               displayScore();
+          }
+          function displayScore(){
+               document.querySelector('.js-player-score').innerText = ` ${score.player}`;
+               document.querySelector('.js-computer-score').innerText = `${score.computer}`;
+          }
+     </script>
+</body>
+</html>
